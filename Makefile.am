@@ -122,6 +122,12 @@ EXTRA_DIST = \
 	OVS_WITH_P4_ARCH.rst \
 	CONTRIBUTING_P4OVS.rst \
 	OVS-WITH-P4-BUILD-README \
+	p4proto/kctrl/README.md \
+	p4proto/kctrl/switchapi/README.md \
+	p4proto/kctrl/switchlink/README.md \
+	p4proto/kctrl/switchsai/README.md \
+	p4proto/p4src/linux_networking/README.md \
+	p4proto/p4src/linux_networking/topology.PNG \
 	external/PATCH-01-TOFINO \
         ptf_tests/p4runtime_test/run_p4_tests.sh \
         ptf_tests/p4runtime_test/run_ptf_tests.py \
@@ -496,7 +502,7 @@ check-tabs:
 	  grep -ln "^	" \
 	    `git ls-files \
 	      | grep -v -f build-aux/initial-tab-allowed-files` /dev/null \
-	      | $(EGREP) -v ':[ 	]*/?\*'; \
+	      | $(EGREP) -v '^p4proto/p4src/linux_networking/|:[ 	]*/?\*'; \
 	then \
 	  echo "See above for files that use tabs for indentation."; \
 	  echo "Please use spaces instead."; \
