@@ -27,6 +27,7 @@ import subprocess
 import re
 import asyncio
 import time
+import platform
 
 from common.lib.local_connection import Local
 from common.lib.telnet_connection import connectionManager
@@ -170,11 +171,27 @@ def vm_create(vm_location_list, memory="512M"):
     """
     num_of_vms = len(vm_location_list)
     vm_list = []
+    uname_obj = platform.uname()
+    machine = uname_obj.machine
+
     for i in range(num_of_vms):
         vm_name = f"VM{i}"
         vm_list.append(vm_name)
 
-        cmd = f"(qemu-kvm -smp 2 -m {memory} \
+        if 'x86_64' in machine: 
+            cmd = f"(qemu-system-x86_64 -smp 2 -m {memory} \
+-boot c -cpu host -enable-kvm -nographic \
+-L /root/pc-bios -name VM{i} \
+-hda {vm_location_list[i]} \
+-object memory-backend-file,id=mem,size={memory},mem-path=/dev/hugepages,share=on \
+-mem-prealloc \
+-numa node,memdev=mem \
+-chardev socket,id=char{i},path=/tmp/vhost-user-{i} \
+-netdev type=vhost-user,id=netdev{i},chardev=char{i},vhostforce \
+-device virtio-net-pci,netdev=netdev{i} \
+-serial telnet::655{i},server,nowait &)"
+        else:
+            cmd = f"(qemu-kvm -smp 2 -m {memory} \
 -boot c -cpu host -enable-kvm -nographic \
 -L /root/pc-bios -name VM{i} \
 -hda {vm_location_list[i]} \
